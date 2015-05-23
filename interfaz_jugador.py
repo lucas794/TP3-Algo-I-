@@ -82,7 +82,7 @@ class InterfazJugador(object):
         return self.lugares[indice_lugar]
 
     def mostrar_carta(self, jugador, carta):
-        """Le muestra al jugador que realizo la sugerencia la carta que el jugador (recibido por parametro) le
+        """Le muestra al jugador (A) que realizo la sugerencia la carta que el jugador (B) (recibido por parametro) le
         muestra para afirmar que su sugerencia es falsa."""
         print "Tu sugerencia no es cierta!", jugador.get_nombre(), "tenia la carta", carta
 
