@@ -27,35 +27,37 @@ class Dado(object):
     def lanzar(self):
         """Lanza todos los dados que tiene, con sus probabilidades asignadas, y devuelve la suma de todos
         los resultados de lanzadas"""
-        # Atenti, es espectacularmente retorcido esto jajajaja (magia negra de python)
-        # (Agrega "probabilidad" veces la cara)
-        caras_por_probabilidad = [cara for cara in xrange(self.caras) for i in range(self.probabilidades[cara])]
 
-        return random.choice(caras_por_probabilidad)
-
+        rand = random.random()
+        for probabilidad in self.probabilidades:
+            if rand < probabilidad :
+                return self.probabilidades.index(probabilidad)
+            else:
+                rand -= probabilidad
 
 class DadoEstandar(Dado):
     """Clase que representa un dado con una distribucion de probabilidades estandar."""
 
     def __init__(self, caras):
     	self.caras = caras
-    	self.probabilidades = [1 for x in xrange(caras)]
+    	self.probabilidades = [1.0/caras for x in xrange(caras)]
 
 
 class DadoCreciente(Dado):
     """Clase que representa un dado con una distribucion de probabilidades creciente."""
     def __init__(self, caras):
         self.caras = caras
-        self.probabilidades = [x for x in xrange(1,caras+1)]
-        random.shuffle(self.probabilidades)
+        suma = (caras*(caras+1))/2
+        self.probabilidades = [float(x/suma) for x in xrange(1,caras+1)]
 
 
 class DadoDecreciente(Dado):
     """Clase que representa un dado con una distribucion de probabilidades decreciente."""
     def __init__(self, caras):
         self.caras = caras
-        self.probabilidades = [x for x in xrange(caras,0,-1)]
-        random.shuffle(self.probabilidades)
+        suma = (caras*(caras+1))/2
+        self.probabilidades = [float(x/suma) for x in xrange(1,caras+1)]
+        self.probabilidades = self.probabilidades[::-1]
 
 
 class DadoTriangular(Dado):
@@ -71,13 +73,13 @@ class DadoTriangular(Dado):
         # Si el hdp es par, los dos numeros mas cercanos al medio
         # son los mayores, el resto se repite
 
+        suma = (caras*(caras+1))/2
         if caras%2 != 0:
-            self.probabilidades = [x for x in xrange(1,(caras+1)/2)]
-            self.probabilidades += [len(self.probabilidades)+1] + self.probabilidades[::-1]
+            self.probabilidades = [x/float(suma) for x in xrange(1,(caras+1)/2)]
+            self.probabilidades += [len(self.probabilidades)/float(suma))] + self.probabilidades[::-1]
         else:
-            self.probabilidades = [x for x in xrange(1,(caras+1)/2)]
-            self.probabilidades += [len(self.probabilidades)+1,len(self.probabilidades)+1] + self.probabilidades[::-1]
-
-        random.shuffle(self.probabilidades)
+            self.probabilidades = [x/float(suma) for x in xrange(1,(caras+1)/2)]
+            val = (len(self.probabilidades)+1)/float(suma)
+            self.probabilidades += [val,val] + self.probabilidades[::-1]
 
 GENERADORES = [DadoEstandar, DadoCreciente, DadoDecreciente, DadoTriangular]
