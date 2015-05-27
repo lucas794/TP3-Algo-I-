@@ -2,6 +2,8 @@
 # Dados = Conexion con Dados
 # listado_inicial conexion con ListadoCartas
 
+#Disculpas mono! 
+
 class Jugador(object):
     """Representa a un jugador manejado por un usuario.
     Todo el manejo para pedirle y mostrarle cosas al usuario se hace utilizando su atributo "pedidos"
@@ -30,11 +32,11 @@ class Jugador(object):
     def asignar_carta(self, carta):
         """Se le asigna una carta a la mano del jugador. Este la marca como vista en su listado
         de cartas."""
-		self.lista_cartas.sacar_carta(carta)
+	self.lista_cartas.sacar_carta(carta)
     
     def get_posicion(self):
         """Obtiene la posicion del jugador."""
-		return self.pos
+	return self.pos
 
     def alguna_carta(self, jugada):
         """Se fija si el jugador tiene alguna de las cartas indicadas en la jugada.
@@ -42,12 +44,9 @@ class Jugador(object):
             - jugada: iterable con cartas.
         Salida: si tiene al menos una de las cartas, debe preguntarle al usuario cual
         prefiere mostrarle. Si no tiene ninguna, devuelve None."""
-		cartas_a_mostrar = list( set(self.lista_cartas) & set(jugada) )
-		
-		if not cartas_a_mostrar
-			return None
-		else
-			return self.pedidos.pedir_carta_a_mostrar(self.nombre, cartas_a_mostrar)
+	cartas_a_mostrar = list( set(str(self.lista_cartas).split(",")) & set(jugada) )
+	
+	return self.pedidos.pedir_carta_a_mostrar(self, cartas_a_mostrar) if cartas_a_mostrar else None
 		
     def arriesgar(self):
         """Devuelve arriesgo del usuario (personaje, arma, jugador), o None si no desea arriesgarse."""
@@ -56,9 +55,10 @@ class Jugador(object):
     def mover(self, tablero):
         """Lanza los dados y se mueve en algun sentido por el tablero. Le muestra al usuario el resultado de
         haber lanzado los dados, y le pide el sentido en el que debe moverse."""
-	self.pedidos.mostrar_dados( [ dados_user.lanzar() for dados_user in self.dados ] )
+	lista_de_dados = [ dados_user.lanzar() for dados_user in self.dados ]
+	self.pedidos.mostrar_dados(lista_de_dados)
 	self.pedidos.pedir_sentido()
-	self.pos = movimiento
+	self.pos = sum(lista_de_dados)
 
     def sugerir(self, tablero, otros_jugadores):
         """Si esta en algun lugar para hacer sugerencias, le pregunta al usuario si desea hacer una.
@@ -68,16 +68,16 @@ class Jugador(object):
         Parametros:
             - tablero: tablero del juego.
             - otros_jugadores: un iterable con los demas jugadores, en el orden en el que se les debe consultar."""
-        if tablero[self.pos_inicial] == None:
+        if tablero[self.pos] == None:
 		return
 
-	respuesta = self.pedidos.quiere_consultar(tablero[self.pos_inicial])
+	respuesta = self.pedidos.quiere_consultar(tablero[self.pos])
 
 	if not respuesta:
 		return
 
-	self.pedidos.mostrar_mano(self.lista_cartas)
-	self.lista_cartas.obtener_no_vistas()
+	self.pedidos.mostrar_mano(str(self.lista_cartas).split(","))
+	self.pedidos.mostrar_listado(self.lista_cartas.obtener_no_vistas())
 
 	posible_pj = self.pedidos.pedir_personaje()
 	posible_arma = self.pedidos.pedir_arma()
@@ -86,7 +86,6 @@ class Jugador(object):
 
 	for jugadores_en_partida in otros_jugadores:
 		carta = jugadores_en_partida.alguna_carta(jugada_final)
-		if carta == None:
+		if carta != None:
 			self.pedidos.mostrar_carta(jugadores_en_partida, carta)
-		else
-			self.pedidos.mostrar_no_hay_cartas()
+			return
