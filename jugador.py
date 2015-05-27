@@ -88,5 +88,4 @@ class Jugador(object):
 			self.pedidos.mostrar_carta(jugadores_en_partida, carta)
 			return
 
-	#Sí llego aquí significa que el loop salió sin pausarse
 	self.pedidos.mostrar_no_hay_cartas()
