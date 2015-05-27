@@ -2,8 +2,6 @@
 # Dados = Conexion con Dados
 # listado_inicial conexion con ListadoCartas
 
-#Disculpas mono! 
-
 class Jugador(object):
     """Representa a un jugador manejado por un usuario.
     Todo el manejo para pedirle y mostrarle cosas al usuario se hace utilizando su atributo "pedidos"
@@ -45,7 +43,7 @@ class Jugador(object):
         Salida: si tiene al menos una de las cartas, debe preguntarle al usuario cual
         prefiere mostrarle. Si no tiene ninguna, devuelve None."""
 	cartas_a_mostrar = list( set(str(self.lista_cartas).split(",")) & set(jugada) )
-	
+		
 	return self.pedidos.pedir_carta_a_mostrar(self, cartas_a_mostrar) if cartas_a_mostrar else None
 		
     def arriesgar(self):
@@ -89,3 +87,6 @@ class Jugador(object):
 		if carta != None:
 			self.pedidos.mostrar_carta(jugadores_en_partida, carta)
 			return
+
+	#Sí llego aquí significa que el loop salió sin pausarse
+	self.pedidos.mostrar_no_hay_cartas()
