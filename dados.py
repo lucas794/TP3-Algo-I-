@@ -22,18 +22,26 @@ class Dado(object):
 
     def obtener_probabilidades(self):
         """Devuelve una copia de las probabilidades de ocurrencia de cada cara del dado."""
-        return self.probabilidades
+        return self.probabilidades[:]
 
     def lanzar(self):
         """Lanza todos los dados que tiene, con sus probabilidades asignadas, y devuelve la suma de todos
         los resultados de lanzadas"""
 
         rand = random.random()
-        for probabilidad in self.probabilidades:
+        index = 0
+        while True:
+            probabilidad = self.probabilidades[index]
             if rand < probabilidad :
-                return self.probabilidades.index(probabilidad)
+                return self.probabilidades.index(probabilidad)+1 #Empiezan de 0 los indices
             else:
                 rand -= probabilidad
+
+            if index+1 < len(self.probabilidades):
+                index += 1
+            else:
+                index = 0
+
 
 class DadoEstandar(Dado):
     """Clase que representa un dado con una distribucion de probabilidades estandar."""
@@ -48,7 +56,7 @@ class DadoCreciente(Dado):
     def __init__(self, caras):
         self.caras = caras
         suma = (caras*(caras+1))/2
-        self.probabilidades = [float(x/suma) for x in xrange(1,caras+1)]
+        self.probabilidades = [x/float(suma) for x in xrange(1,caras+1)]
 
 
 class DadoDecreciente(Dado):
@@ -56,7 +64,7 @@ class DadoDecreciente(Dado):
     def __init__(self, caras):
         self.caras = caras
         suma = (caras*(caras+1))/2
-        self.probabilidades = [float(x/suma) for x in xrange(1,caras+1)]
+        self.probabilidades = [x/float(suma) for x in xrange(1,caras+1)]
         self.probabilidades = self.probabilidades[::-1]
 
 
@@ -73,13 +81,13 @@ class DadoTriangular(Dado):
         # Si el hdp es par, los dos numeros mas cercanos al medio
         # son los mayores, el resto se repite
 
-        suma = (caras*(caras+1))/2
+        suma = float( (caras*(caras+1))/2 )
         if caras%2 != 0:
-            self.probabilidades = [x/float(suma) for x in xrange(1,(caras+1)/2)]
-            self.probabilidades += [len(self.probabilidades)/float(suma))] + self.probabilidades[::-1]
+            self.probabilidades = [x/suma for x in xrange(1, (caras+1)/2) ]
+            self.probabilidades += [(len(self.probabilidades)+1)/suma] + self.probabilidades[::-1]
         else:
-            self.probabilidades = [x/float(suma) for x in xrange(1,(caras+1)/2)]
-            val = (len(self.probabilidades)+1)/float(suma)
+            self.probabilidades = [x/suma for x in xrange(1, (caras+1)/2) ] # Redondea para abajo en la division
+            val = (len(self.probabilidades)+1)/suma
             self.probabilidades += [val,val] + self.probabilidades[::-1]
 
 GENERADORES = [DadoEstandar, DadoCreciente, DadoDecreciente, DadoTriangular]
