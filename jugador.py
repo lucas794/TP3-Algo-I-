@@ -13,7 +13,7 @@ class Jugador(object):
         y alguien que le permita hacerle pedidos al usuario, de la manera que corresponda."""
         #Notes : Nombre = String ; posicion_inicial integer, listado_inicial = lista, dados = lista de objetos
         self.nombre = nombre
-        self.pos = posicion_inicial
+        self.posicion = posicion_inicial
         self.lista_cartas = listado_inicial
         self.dados = dados[:]
         self.pedidos = pedidos # Referencia a interfaz_jugador de cada jugador!
@@ -34,7 +34,7 @@ class Jugador(object):
 
     def get_posicion(self):
         """Obtiene la posicion del jugador."""
-        return self.pos
+        return self.posicion
 
     def alguna_carta(self, jugada):
         """Se fija si el jugador tiene alguna de las cartas indicadas en la jugada.
@@ -56,7 +56,7 @@ class Jugador(object):
         lista_de_dados = [ dados_user.lanzar() for dados_user in self.dados ]
         self.pedidos.mostrar_dados(lista_de_dados)
         sentido = self.pedidos.pedir_sentido()
-        self.pos = tablero.siguiente(self.pos, sum(lista_de_dados), sentido)
+        self.posicion = tablero.siguiente(self.posicion, sum(lista_de_dados), sentido)
 
     def sugerir(self, tablero, otros_jugadores):
         """Si esta en algun lugar para hacer sugerencias, le pregunta al usuario si desea hacer una.
@@ -66,10 +66,10 @@ class Jugador(object):
         Parametros:
             - tablero: tablero del juego.
             - otros_jugadores: un iterable con los demas jugadores, en el orden en el que se les debe consultar."""
-        if tablero[self.pos] == None:
+        if tablero[self.posicion] == None:
             return
 
-        respuesta = self.pedidos.quiere_consultar(tablero[self.pos])
+        respuesta = self.pedidos.quiere_consultar(tablero[self.posicion])
 
         if not respuesta:
             return
