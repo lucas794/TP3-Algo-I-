@@ -85,7 +85,7 @@ class Jugador(object):
         for jugadores_en_partida in otros_jugadores:
             carta = jugadores_en_partida.alguna_carta(jugada_final)
             if carta != None:
-                self.sacar_carta(carta)
+                self.lista_cartas.sacar_carta(carta)
                 self.pedidos.mostrar_carta(jugadores_en_partida, carta)
                 return
 
